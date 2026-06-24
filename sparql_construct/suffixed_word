@@ -1,1 +1,31 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX mmoon: <http://mmoon.org/core/>
+PREFIX ell_schema: <http://mmoon.org/ell/schema/omg/>
+PREFIX : <http://mmoon.org/ell/inventory/omg/>
 
+
+CONSTRUCT {
+  ?wordIRI rdf:type mmoon:Word ;
+    		mmoon:consistsOfStem ?stem ;
+           ell_schema:consistsOfInfSuf   ?affix ;
+           ell_schema:isMappedTo ?wp ;
+           mmoon:orthographicRepresentation ?generatedForm ;
+    		ell_schema:hasBase ?base .
+}
+WHERE {
+  ?wp ell_schema:consistsOfStemOfAWordPattern ?stemPattern ;
+      ell_schema:consistsOfInfSuf  ?affix .
+  ?stemPattern ell_schema:isMappedTo ?stem .
+  ?stem mmoon:orthographicRepresentation ?stemForm ;
+    	ell_schema:hasBase ?base .
+  ?affix mmoon:orthographicRepresentation ?affixForm .
+    
+  BIND(CONCAT(?stemForm, ?affixForm) AS ?generatedForm)
+  BIND(IRI(CONCAT("http://mmoon.org/ell/inventory/omg/",
+                  STRAFTER(STR(?stem), "omg/"),
+                  "",
+                  STRAFTER(STR(?affix), "omg/"))) AS ?wordIRI)
+}
