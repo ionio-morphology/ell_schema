@@ -8,24 +8,48 @@ PREFIX : <http://mmoon.org/ell/inventory/omg/>
 
 
 CONSTRUCT {
+
   ?wordIRI rdf:type mmoon:Word ;
-    		mmoon:consistsOfStem ?stem ;
-           ell_schema:consistsOfInfSuf   ?affix ;
+           mmoon:consistsOfStem ?stem ;
+           ell_schema:consistsOfInfSuf ?affix ;
            ell_schema:isMappedTo ?wp ;
            mmoon:orthographicRepresentation ?generatedForm ;
-    		ell_schema:hasBase ?base .
+           ell_schema:hasBase ?base ;
+           ell_schema:relatesTo ?derivationRule .
+
 }
+
 WHERE {
+
   ?wp ell_schema:consistsOfStemOfAWordPattern ?stemPattern ;
-      ell_schema:consistsOfInfSuf  ?affix .
-  ?stemPattern ell_schema:isMappedTo ?stem .
+      ell_schema:consistsOfInfSuf ?affix .
+
+  ?stemPattern ell_schema:isMappedTo ?stem ;
+               ell_schema:consistsOfDerSuf ?derAff .
+
+  ?derivationRule ell_schema:involves ?derAff .
+
   ?stem mmoon:orthographicRepresentation ?stemForm ;
-    	ell_schema:hasBase ?base .
+        ell_schema:hasBase ?base .
+
   ?affix mmoon:orthographicRepresentation ?affixForm .
-    
-  BIND(CONCAT(?stemForm, ?affixForm) AS ?generatedForm)
-  BIND(IRI(CONCAT("http://mmoon.org/ell/inventory/omg/",
-                  STRAFTER(STR(?stem), "omg/"),
-                  "",
-                  STRAFTER(STR(?affix), "omg/"))) AS ?wordIRI)
+
+  BIND(
+      CONCAT(
+          STR(?stemForm),
+          STR(?affixForm)
+      ) AS ?generatedForm
+  )
+
+  BIND(
+      IRI(
+          CONCAT(
+              "http://mmoon.org/ell/inventory/omg/",
+              STRAFTER(STR(?stem), "omg/"),
+              "_",
+              STRAFTER(STR(?affix), "omg/")
+          )
+      ) AS ?wordIRI
+  )
+
 }
