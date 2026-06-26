@@ -16,7 +16,6 @@ CONSTRUCT {
            mmoon:orthographicRepresentation ?generatedForm ;
            ell_schema:hasBase ?base ;
            ell_schema:relatesTo ?derivationRule .
-
 }
 
 WHERE {
