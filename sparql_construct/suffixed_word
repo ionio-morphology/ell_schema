@@ -36,7 +36,6 @@ WHERE {
           STR(?affixForm)
       ) AS ?generatedForm
   )
-
   BIND(
       IRI(
           CONCAT(
@@ -47,5 +46,4 @@ WHERE {
           )
       ) AS ?wordIRI
   )
-
 }
